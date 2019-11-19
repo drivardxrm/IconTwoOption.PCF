@@ -1,15 +1,21 @@
 import * as React from 'react';
 import { ChoiceGroup, IChoiceGroupOption } from 'office-ui-fabric-react/lib/ChoiceGroup';
 import { initializeIcons, IconNames } from '@uifabric/icons';
+import { IIconProps } from 'office-ui-fabric-react/lib/Icon';
 
 
 export interface IProps {
     selected: boolean;
+    lefticon: string;
+    righticon: string;
+    lefttext: string;
+    righttext:string;
+    leftselectedcolor:string;
+    rightselectedcolor:string;
     onChange: (selected:boolean) => void;
 }
 
 export interface IState {
-    //selected: boolean;
     selectedvalue: "left" | "right";
 }
 
@@ -58,7 +64,17 @@ export class IconTwoOptionControl extends React.Component<IProps,IState> {
 
     render() {
         
+            var lefticonprops:IIconProps = {iconName:this.props.lefticon}
+            if(this.state.selectedvalue=="left")
+            {
+                lefticonprops.style = {color:this.props.leftselectedcolor}
+            }
 
+            var righticonprops:IIconProps = {iconName:this.props.righticon}
+            if(this.state.selectedvalue=="right")
+            {
+                righticonprops.style = {color:this.props.rightselectedcolor}
+            }
             return (
                 
                 <ChoiceGroup
@@ -68,14 +84,14 @@ export class IconTwoOptionControl extends React.Component<IProps,IState> {
                 options={[
                     {
                         key: "left",
-                        iconProps: { iconName: "Dislike"},
-                        text: "Dislike"
+                        iconProps: lefticonprops,
+                        text: this.props.lefttext
                         
                     },
                     {
                         key: "right",
-                        iconProps: { iconName: "Like"},
-                        text: "Like"
+                        iconProps: righticonprops,
+                        text: this.props.righttext
                     }
                 ]}
                 onChange={this.onChange}

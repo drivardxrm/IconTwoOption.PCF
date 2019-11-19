@@ -9,7 +9,14 @@ export class IconTwoOption implements ComponentFramework.StandardControl<IInputs
 	private _selected: boolean;
 	private _notifyOutputChanged:() => void;
 	private _container: HTMLDivElement;
-	private _props: IProps = { selected: false, onChange : this.notifyChange.bind(this) };
+	private _props: IProps = { selected: false, 
+								lefticon:"",
+								righticon:"",
+								lefttext:"",
+								righttext:"",
+								leftselectedcolor:"",
+								rightselectedcolor:"", 
+								onChange : this.notifyChange.bind(this) };
 	
 	
 	/**
@@ -30,11 +37,11 @@ export class IconTwoOption implements ComponentFramework.StandardControl<IInputs
 	 */
 	public init(context: ComponentFramework.Context<IInputs>, notifyOutputChanged: () => void, state: ComponentFramework.Dictionary, container:HTMLDivElement)
 	{
-		console.log("init :" + context.parameters.twooption.raw)
+
 		// Add control initialization codeà
 		this._notifyOutputChanged = notifyOutputChanged;
 		this._container = document.createElement("div");
-		this._selected = context.parameters.twooption.raw;
+		//this._selected = context.parameters.twooption.raw;
 		//this._props = { selectedvalue : "left", onChange : this.notifyChange.bind(this) };
 
 
@@ -44,7 +51,7 @@ export class IconTwoOption implements ComponentFramework.StandardControl<IInputs
 	notifyChange(selected: boolean) {
 		
 		this._selected = selected;
-		this._props.selected =  this._selected;
+		//this._props.selected =  this._selected;
 		this._notifyOutputChanged();
 	}
 
@@ -61,6 +68,15 @@ export class IconTwoOption implements ComponentFramework.StandardControl<IInputs
 		// Add code to update control view
 		this._selected = context.parameters.twooption.raw;
 		this._props.selected = this._selected;
+		this._props.lefticon = context.parameters.lefticon.raw || "";
+		this._props.righticon = context.parameters.righticon.raw || "";
+		this._props.lefttext = context.parameters.lefttext.raw || "";
+		this._props.righttext = context.parameters.righttext.raw || "";
+		this._props.leftselectedcolor = context.parameters.leftselectedcolor.raw || "";
+		this._props.rightselectedcolor = context.parameters.rightselectedcolor.raw || "";
+		
+
+
 
 		
 

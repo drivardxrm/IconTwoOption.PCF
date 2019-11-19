@@ -3,6 +3,12 @@
   <control namespace="XrmVision" constructor="IconTwoOption" version="1.0.0" display-name-key="IconTwoOption" description-key="TwoOption control displaying icons" control-type="standard">
     <!-- property node identifies a specific, configurable piece of data that the control expects from CDS -->
     <property name="twooption" display-name-key="Two Option Field" description-key="Bounded Two-Option field" of-type="TwoOptions" usage="bound" required="true" />
+    <property name="lefticon" display-name-key="Left Side Icon" description-key="Left side icon, list here  https://developer.microsoft.com/en-us/fabric#/styles/web/icons#fabric-icons-tool" of-type="SingleLine.Text" usage="input" required="true" default-value="DislikeSolid"/>
+    <property name="righticon" display-name-key="Right Side Icon" description-key="Right side icon, list here  https://developer.microsoft.com/en-us/fabric#/styles/web/icons#fabric-icons-tool" of-type="SingleLine.Text" usage="input" required="true" default-value="LikeSolid"/>
+    <property name="lefttext" display-name-key="Left Side Text" description-key="Left side text" of-type="SingleLine.Text" usage="input" required="true" default-value="Dislike"/>
+    <property name="righttext" display-name-key="Right Side Text" description-key="Right side text" of-type="SingleLine.Text" usage="input" required="true" default-value="Like"/>
+    <property name="leftselectedcolor" display-name-key="Left Side Icon selected color" description-key="Left side Icon selected color" of-type="SingleLine.Text" usage="input" required="false" default-value="#005A9E"/>
+    <property name="rightselectedcolor" display-name-key="Right Side Icon selected color" description-key="Right side Icon selected color" of-type="SingleLine.Text" usage="input" required="false" default-value="#005A9E"/>
     <!-- 
       Property node's of-type attribute can be of-type-group attribute. 
       Example:
