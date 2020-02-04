@@ -2,7 +2,7 @@
 import {IInputs, IOutputs} from "./generated/ManifestTypes";
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { IconTwoOptionControl, IProps } from "./IconTwoOptionControl";
+import IconTwoOptionControl, {IProps } from "./IconTwoOptionControl";
 
 export class IconTwoOption implements ComponentFramework.StandardControl<IInputs, IOutputs> {
 
@@ -16,6 +16,8 @@ export class IconTwoOption implements ComponentFramework.StandardControl<IInputs
 								righttext:"",
 								leftselectedcolor:"",
 								rightselectedcolor:"", 
+								readonly:false,
+								masked:false,
 								onChange : this.notifyChange.bind(this) };
 	
 	
@@ -41,9 +43,6 @@ export class IconTwoOption implements ComponentFramework.StandardControl<IInputs
 		// Add control initialization codeà
 		this._notifyOutputChanged = notifyOutputChanged;
 		this._container = document.createElement("div");
-		//this._selected = context.parameters.twooption.raw;
-		//this._props = { selectedvalue : "left", onChange : this.notifyChange.bind(this) };
-
 
 		container.appendChild(this._container);
 	}
@@ -51,7 +50,6 @@ export class IconTwoOption implements ComponentFramework.StandardControl<IInputs
 	notifyChange(selected: boolean) {
 		
 		this._selected = selected;
-		//this._props.selected =  this._selected;
 		this._notifyOutputChanged();
 	}
 
@@ -63,22 +61,52 @@ export class IconTwoOption implements ComponentFramework.StandardControl<IInputs
 	 */
 	public updateView(context: ComponentFramework.Context<IInputs>): void
 	{
+		//Visibility of the main attribute on the form
+		let isVisible = context.mode.isVisible 
 		
+		// If the bound attribute is disabled because it is inactive or the user doesn't have access
+		let isReadOnly = context.mode.isControlDisabled;
+
+		let isMasked = false;
+		// When a field has FLS enabled, the security property on the attribute parameter is set
+		if (context.parameters.twooption.security) {
+			isReadOnly = isReadOnly || !context.parameters.twooption.security.editable;
+			isVisible = isVisible && context.parameters.twooption.security.readable;
+			isMasked = isVisible && !context.parameters.twooption.security.readable
+		}
+
+		if(!isVisible){
+			return;
+		}
+		
+		
+		//LEFT  TEXT
+		let options:ComponentFramework.PropertyHelper.FieldPropertyMetadata.TwoOptionMetadata | undefined
+				= context.parameters.twooption.attributes;
+		let lefttext = context.parameters.lefttext.raw || undefined;
+		if(lefttext == undefined)
+		{
+			lefttext = options?.Options[0].Label;
+		}
+
+		//RIGHT TEXT
+		let righttext = context.parameters.righttext.raw || undefined;
+		if(righttext == undefined)
+		{
+			righttext = options?.Options[1].Label;
+		}
 
 		// Add code to update control view
 		this._selected = context.parameters.twooption.raw;
 		this._props.selected = this._selected;
 		this._props.lefticon = context.parameters.lefticon.raw || "";
 		this._props.righticon = context.parameters.righticon.raw || "";
-		this._props.lefttext = context.parameters.lefttext.raw || "";
-		this._props.righttext = context.parameters.righttext.raw || "";
+		this._props.lefttext = lefttext || "";
+		this._props.righttext = righttext || "";
 		this._props.leftselectedcolor = context.parameters.leftselectedcolor.raw || "";
 		this._props.rightselectedcolor = context.parameters.rightselectedcolor.raw || "";
-		
-
-
-
-		
+		this._props.readonly = isReadOnly;
+		this._props.masked = isMasked;
 
 		ReactDOM.render(
 			React.createElement(IconTwoOptionControl, this._props)
@@ -104,5 +132,6 @@ export class IconTwoOption implements ComponentFramework.StandardControl<IInputs
 	public destroy(): void
 	{
 		// Add code to cleanup control if necessary
+		ReactDOM.unmountComponentAtNode(this._container);
 	}
 }

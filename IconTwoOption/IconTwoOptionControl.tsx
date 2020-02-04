@@ -1,7 +1,11 @@
 import * as React from 'react';
 import { ChoiceGroup, IChoiceGroupOption } from 'office-ui-fabric-react/lib/ChoiceGroup';
-import { initializeIcons, IconNames } from '@uifabric/icons';
+import { Stack,TextField} from "office-ui-fabric-react/lib/index"; 
+import { FontIcon} from "office-ui-fabric-react/lib/Icon";
+import { mergeStyles } from "office-ui-fabric-react/lib/Styling";
+import { initializeIcons} from '@uifabric/icons';
 import { IIconProps } from 'office-ui-fabric-react/lib/Icon';
+import { useState, useEffect } from "react";
 
 
 export interface IProps {
@@ -12,92 +16,103 @@ export interface IProps {
     righttext:string;
     leftselectedcolor:string;
     rightselectedcolor:string;
+    readonly: boolean;
+    masked: boolean;
     onChange: (selected:boolean) => void;
 }
 
-export interface IState {
-    selectedvalue: "left" | "right";
-}
+
+const IconTwoOptionControl = (props : IProps): JSX.Element => {
+
+     //STATE VARIABLES
+    const [selectedValue, setSelectedValue] = useState<"left" | "right">(props.selected == true ? "right" : "left");
+    const [lefticonprops, setLeftIconProps] = useState<IIconProps | undefined>(undefined);
+    const [righticonprops, setRightIconProps] = useState<IIconProps | undefined>(undefined);
 
 
-export class IconTwoOptionControl extends React.Component<IProps,IState> {
-
-    constructor(props: Readonly<IProps>) {
-
+    //EFFECT HOOKS
+    //-Initialization : will happen only once = like a contructor
+    useEffect(() => {
         initializeIcons();
-        super(props);
-        this.state = { selectedvalue: this.getSelectedValue(this.props.selected)};
-        this.onChange = this.onChange.bind(this);
+        setLeftIconProps({iconName:props.lefticon});
+        setRightIconProps({iconName:props.righticon});
+    }, []); 
 
-    }
+    useEffect(() => {
 
-    componentWillReceiveProps(props: IProps) {
-
-        this.setState({selectedvalue : this.getSelectedValue(props.selected)});
-
-    }
-
-    getSelectedValue(selected:boolean){
-        return selected == true ? "right": "left"
-    }
-
-    getLeftRight(selectedvalue:string){
-        return selectedvalue == "right" ? "right" : "left";
-    }
-
-    getSelected(selectedvalue:string){
-         return selectedvalue == "right";
-    }
-
-    onChange(ev?: React.SyntheticEvent<HTMLElement>, option?: IChoiceGroupOption) {
-        if(option != undefined)
+        let lefticonprops:IIconProps = {iconName:props.lefticon};
+        if(selectedValue=="left")
         {
-            
-            let selected = this.getSelected(option.key)
+            lefticonprops.style = {color:props.leftselectedcolor}
+        }
+        setLeftIconProps(lefticonprops);
 
-            this.setState({selectedvalue: this.getLeftRight(option.key)},)
-            this.props.onChange(selected);
-            
+        let righticonprops:IIconProps = {iconName:props.righticon};
+        if(selectedValue=="right")
+        {
+            righticonprops.style = {color:props.rightselectedcolor}
+        }
+        setRightIconProps(righticonprops);
+        
+        let selectedValueBool = selectedValue == "right";
+        
+        if(props.selected != selectedValueBool)
+        {
+            props.onChange(selectedValueBool);
+        }
+    }, [selectedValue]);
+
+    const onChange = (ev?: React.SyntheticEvent<HTMLElement>, option?: IChoiceGroupOption) => {
+        if(option != undefined)
+        {            
+            let selected : "left" | "right" = option.key == "right" ? "right" : "left"; 
+            setSelectedValue(selected)
         }
         
     }
 
-    render() {
-        
-            var lefticonprops:IIconProps = {iconName:this.props.lefticon}
-            if(this.state.selectedvalue=="left")
-            {
-                lefticonprops.style = {color:this.props.leftselectedcolor}
-            }
+    //STYLES
+    const maskedclass = mergeStyles({
+        fontSize: 30,
+        height: 30,
+        width: 50,
+        margin: "1px",      
+    });
 
-            var righticonprops:IIconProps = {iconName:this.props.righticon}
-            if(this.state.selectedvalue=="right")
-            {
-                righticonprops.style = {color:this.props.rightselectedcolor}
-            }
-            return (
-                
-                <ChoiceGroup
-                //label="Choose"
-                selectedKey={this.state.selectedvalue}
-                
-                options={[
-                    {
-                        key: "left",
-                        iconProps: lefticonprops,
-                        text: this.props.lefttext
-                        
-                    },
-                    {
-                        key: "right",
-                        iconProps: righticonprops,
-                        text: this.props.righttext
-                    }
-                ]}
-                onChange={this.onChange}
-                />
-            );
-    }
-
+    //RENDERING
+    if(props.masked){
+        return(
+            <Stack tokens={{ childrenGap: 2 }} horizontal>
+                <FontIcon iconName="Lock" className={maskedclass} />     
+                <TextField value="*********" style={{width:"100%"}}/>
+            </Stack>
+        )
+    }else{
+        return (
+            
+            <ChoiceGroup
+            //label="Choose"
+            selectedKey={selectedValue}
+            options={[
+                {
+                    key: "left",
+                    iconProps: lefticonprops,
+                    text: props.lefttext,
+                    disabled: props.readonly
+                },
+                {
+                    key: "right",
+                    iconProps: righticonprops,
+                    text: props.righttext,
+                    disabled: props.readonly
+                }
+            ]}
+            onChange={onChange}
+            />
+        );
+    }        
 }
+export default IconTwoOptionControl;
+
+
 
