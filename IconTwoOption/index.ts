@@ -97,7 +97,8 @@ export class IconTwoOption implements ComponentFramework.StandardControl<IInputs
 		}
 
 		// Add code to update control view
-		this._selected = context.parameters.twooption.raw;
+		this._selected = context.parameters.twooption.raw; //!== null ? context.parameters.twooption.raw : undefined;
+		//this._selected = context.parameters.twooption.raw;
 		this._props.selected = this._selected;
 		this._props.lefticon = context.parameters.lefticon.raw || "";
 		this._props.righticon = context.parameters.righticon.raw || "";

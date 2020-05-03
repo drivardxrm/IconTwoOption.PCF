@@ -1,11 +1,9 @@
-import * as React from 'react';
-import { ChoiceGroup, IChoiceGroupOption } from 'office-ui-fabric-react/lib/ChoiceGroup';
-import { Stack,TextField} from "office-ui-fabric-react/lib/index"; 
-import { FontIcon} from "office-ui-fabric-react/lib/Icon";
-import { mergeStyles } from "office-ui-fabric-react/lib/Styling";
-import { initializeIcons} from '@uifabric/icons';
-import { IIconProps } from 'office-ui-fabric-react/lib/Icon';
+import * as React from "react";
 import { useState, useEffect } from "react";
+import {useConst } from "@uifabric/react-hooks";
+import { IIconProps, initializeIcons, mergeStyles, FontIcon,Stack,TextField, ChoiceGroup, IChoiceGroupOption } from "@fluentui/react";
+
+
 
 
 export interface IProps {
@@ -25,51 +23,48 @@ export interface IProps {
 const IconTwoOptionControl = (props : IProps): JSX.Element => {
 
      //STATE VARIABLES
-    const [selectedValue, setSelectedValue] = useState<"left" | "right">(props.selected == true ? "right" : "left");
-    const [lefticonprops, setLeftIconProps] = useState<IIconProps | undefined>(undefined);
-    const [righticonprops, setRightIconProps] = useState<IIconProps | undefined>(undefined);
+    const [selectedValue, setSelectedValue] = useState<boolean>(props.selected);
+    const [lefticonprops, setLeftIconProps] = useState<IIconProps>({iconName:props.lefticon});
+    const [righticonprops, setRightIconProps] = useState<IIconProps>({iconName:props.righticon});
 
+    //-Initialization : will happen only once = like a contructor
+    useConst(() => {
+        initializeIcons();
+    });
 
     //EFFECT HOOKS
-    //-Initialization : will happen only once = like a contructor
-    useEffect(() => {
-        initializeIcons();
-        setLeftIconProps({iconName:props.lefticon});
-        setRightIconProps({iconName:props.righticon});
-    }, []); 
-
     useEffect(() => {
 
+        //ADJUST ICONPROPS when selected value changes
         let lefticonprops:IIconProps = {iconName:props.lefticon};
-        if(selectedValue=="left")
+        if(selectedValue===false)
         {
             lefticonprops.style = {color:props.leftselectedcolor}
         }
         setLeftIconProps(lefticonprops);
 
         let righticonprops:IIconProps = {iconName:props.righticon};
-        if(selectedValue=="right")
+        if(selectedValue===true)
         {
             righticonprops.style = {color:props.rightselectedcolor}
         }
         setRightIconProps(righticonprops);
         
-        let selectedValueBool = selectedValue == "right";
-        
-        if(props.selected != selectedValueBool)
+        //SIGNAL BACK TO PCF
+        if(props.selected !== selectedValue)
         {
-            props.onChange(selectedValueBool);
+            props.onChange(selectedValue);
         }
     }, [selectedValue]);
 
+    //EVENT HANDLER
     const onChange = (ev?: React.SyntheticEvent<HTMLElement>, option?: IChoiceGroupOption) => {
-        if(option != undefined)
+        if(option !== undefined)
         {            
-            let selected : "left" | "right" = option.key == "right" ? "right" : "left"; 
-            setSelectedValue(selected)
+            setSelectedValue(option.key === "right");
         }
-        
     }
+
 
     //STYLES
     const maskedclass = mergeStyles({
@@ -78,6 +73,8 @@ const IconTwoOptionControl = (props : IProps): JSX.Element => {
         width: 50,
         margin: "1px",      
     });
+
+
 
     //RENDERING
     if(props.masked){
@@ -89,26 +86,27 @@ const IconTwoOptionControl = (props : IProps): JSX.Element => {
         )
     }else{
         return (
-            
+
             <ChoiceGroup
-            //label="Choose"
-            selectedKey={selectedValue}
-            options={[
-                {
-                    key: "left",
-                    iconProps: lefticonprops,
-                    text: props.lefttext,
-                    disabled: props.readonly
-                },
-                {
-                    key: "right",
-                    iconProps: righticonprops,
-                    text: props.righttext,
-                    disabled: props.readonly
-                }
-            ]}
-            onChange={onChange}
+
+                selectedKey={selectedValue ? "right" : "left"}
+                options={[
+                    {
+                        key: "left",
+                        iconProps: lefticonprops,
+                        text: props.lefttext,
+                        disabled: props.readonly
+                    },
+                    {
+                        key: "right",
+                        iconProps: righticonprops,
+                        text: props.righttext,
+                        disabled: props.readonly
+                    }
+                ]}
+                onChange={onChange}
             />
+            
         );
     }        
 }
