@@ -61,9 +61,7 @@ export class IconTwoOption implements ComponentFramework.StandardControl<IInputs
 	 */
 	public updateView(context: ComponentFramework.Context<IInputs>): void
 	{
-		//Visibility of the main attribute on the form
-		let isVisible = context.mode.isVisible 
-		
+
 		// If the bound attribute is disabled because it is inactive or the user doesn't have access
 		let isReadOnly = context.mode.isControlDisabled;
 
@@ -71,15 +69,10 @@ export class IconTwoOption implements ComponentFramework.StandardControl<IInputs
 		// When a field has FLS enabled, the security property on the attribute parameter is set
 		if (context.parameters.twooption.security) {
 			isReadOnly = isReadOnly || !context.parameters.twooption.security.editable;
-			isVisible = isVisible && context.parameters.twooption.security.readable;
-			isMasked = isVisible && !context.parameters.twooption.security.readable
+			
+			isMasked = !context.parameters.twooption.security.readable
 		}
 
-		if(!isVisible){
-			return;
-		}
-		
-		
 		//LEFT  TEXT
 		let options:ComponentFramework.PropertyHelper.FieldPropertyMetadata.TwoOptionMetadata | undefined
 				= context.parameters.twooption.attributes;
@@ -97,8 +90,8 @@ export class IconTwoOption implements ComponentFramework.StandardControl<IInputs
 		}
 
 		// Add code to update control view
-		this._selected = context.parameters.twooption.raw; //!== null ? context.parameters.twooption.raw : undefined;
-		//this._selected = context.parameters.twooption.raw;
+		this._selected = context.parameters.twooption.raw; 
+		
 		this._props.selected = this._selected;
 		this._props.lefticon = context.parameters.lefticon.raw || "";
 		this._props.righticon = context.parameters.righticon.raw || "";

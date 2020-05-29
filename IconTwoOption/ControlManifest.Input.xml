@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <manifest>
-  <control namespace="DR" constructor="IconTwoOption" version="1.0.5" display-name-key="IconTwoOption" description-key="TwoOption control displaying icons" control-type="standard" preview-image="img/icontwooption-preview.png">
+  <control namespace="DR" constructor="IconTwoOption" version="1.0.6" display-name-key="IconTwoOption" description-key="TwoOption control displaying icons" control-type="standard" preview-image="img/icontwooption-preview.png">
     <!-- property node identifies a specific, configurable piece of data that the control expects from CDS -->
     <property name="twooption" display-name-key="Two Option Field" description-key="Bounded Two-Option field" of-type="TwoOptions" usage="bound" required="true" />
     <property name="lefticon" display-name-key="Left Side Icon" description-key="Left side icon, list here  https://developer.microsoft.com/en-us/fabric#/styles/web/icons#fabric-icons-tool" of-type="SingleLine.Text" usage="input" required="true" default-value="Dislike"/>
