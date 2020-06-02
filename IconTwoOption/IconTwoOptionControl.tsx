@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import {useConst } from "@uifabric/react-hooks";
 import { IIconProps, initializeIcons, mergeStyles, FontIcon,Stack,TextField, ChoiceGroup, IChoiceGroupOption } from "@fluentui/react";
 
@@ -32,8 +32,8 @@ const IconTwoOptionControl = (props : IProps): JSX.Element => {
         initializeIcons();
     });
 
-    //EFFECT HOOKS
-    useEffect(() => {
+    //LAYOUTEFFECT HOOKS - before render
+    useLayoutEffect(() => {
 
         //ADJUST ICONPROPS when selected value changes
         let lefticonprops:IIconProps = {iconName:props.lefticon};
@@ -50,11 +50,17 @@ const IconTwoOptionControl = (props : IProps): JSX.Element => {
         }
         setRightIconProps(righticonprops);
         
+    }, [selectedValue]);
+
+    //EFFECT HOOKS - after render
+    useEffect(() => {
+
         //SIGNAL BACK TO PCF
         if(props.selected !== selectedValue)
         {
             props.onChange(selectedValue);
         }
+
     }, [selectedValue]);
 
     //EVENT HANDLER
