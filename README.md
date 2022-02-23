@@ -1,4 +1,4 @@
-# IconTwoOption.PCF
+# IconTwoOption.PCF ![GitHub all releases](https://img.shields.io/github/downloads/drivardxrm/IconTwoOption.PCF/total?style=plastic)
 IconTwoOption PCF (PowerApps Component framework) Control that turns a PowerApps TwoOption field into a configurable Office UI Fabric Choice group with Icons 
 
 Available icons here : https://developer.microsoft.com/en-us/fabric#/styles/web/icons#available-icons 
